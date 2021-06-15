@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      {% load static %}
+      <meta charset="UTF-8">
+      <title>Adhan Timing</title>
+      <style>
+         table td {
+         border: 0;
+         }
+         table th {
+         border: 0;
+         text-align: center;
+         }
+         table {
+         border:1px solid #000;
+         }
+      </style>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+      <script src="{% static '/js/en_only/geodatasource-cr.min.js' %}"></script>
+      <link rel="gettext" type="application/x-po" href="{% static '/languages/en/LC_MESSAGES/en.po' %}" />
+      <script type="text/javascript" src="{% static '/js/Gettext.js' %}"></script>
+
+   </head>
+   <body>
+      <script>
+         $.getJSON("https://api.ipify.org?format=json",
+                                           function(data) {
+             document.getElementById('formdata').elements['ipaddress'].value = data.ip;
+         })
+      </script>
+      <form action="" method="post">
+         {% csrf_token %}
+         <div>
+            Country: <select class="gds-cr" country-data-region-id="gds-cr-two" data-language="en" country-data-default-value="AE" required></select>
+         </div>
+         <div>
+            Region: <select name="city" id="gds-cr-two" region-data-default-value="Abu Dhabi" required ></select>
+         </div>
+
+          <div>
+              <input id="date" type="date" name="date" >
+               <script>
+                        let dateInput = document.getElementById('date');
+                        dateInput.valueAsDate = new Date();
+               </script>
+
+          </div>
+         <input type="submit" value="Submit" >
+      </form>
+      <form action="" method="post" id="formdata">
+         {% csrf_token %}
+         <input type="text" name="ip" id="ipaddress" hidden="true">
+         <br/>
+         <input type="submit" value="Timing for current location and date">
+         <br/>
+      </form>
+      <h2> View Timing!</h2>
+      <table border="1" cellpadding="1" cellspacing="1">
+         <th colspan="2">ADHAN TIMINGS</th>
+         {% for key, time in times.items %}
+         <tr>
+            <td> {{key}} </td>
+            <td> : {{time}} </td>
+         </tr>
+         {% endfor %}
+      </table>
+   </body>
+</html>
